@@ -10,7 +10,17 @@ const apiKey = environment.apiKey;
   providedIn: 'root',
 })
 export class MoviesService {
+  private popularesPage = 0;
+
   constructor(private http: HttpClient) {}
+
+  getPopulares() {
+    this.popularesPage++;
+
+    const query = `/discover/movie?sort_by=popularity.desc&page=${this.popularesPage}`;
+
+    return this.ejecutarQuery<RespuestaMDB>(query);
+  }
 
   getFeature() {
     const hoy = new Date();
