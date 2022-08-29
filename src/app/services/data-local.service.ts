@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
@@ -14,6 +15,7 @@ export class DataLocalService {
     private toastController: ToastController
   ) {
     this.init();
+    this.cargarFavorito();
   }
 
   async presentToast(message: string) {
@@ -50,5 +52,20 @@ export class DataLocalService {
 
     this.presentToast(mensaje);
     this._storage.set('peliculas', this.peliculas);
+
+    return !existe;
+  }
+
+  async cargarFavorito() {
+    const peliculas = await this._storage.get('peliculas');
+    this.peliculas = peliculas || [];
+    return this.peliculas;
+  }
+
+  async existePelicula(id) {
+    await this.cargarFavorito();
+    const existe = this.peliculas.find((peli) => peli.id === id);
+
+    return existe ? true : false;
   }
 }

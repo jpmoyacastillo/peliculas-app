@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import {
+  Genre,
   PeliculaDetalle,
   RespuestaCredits,
   RespuestaMDB,
@@ -14,6 +15,7 @@ const apiKey = environment.apiKey;
   providedIn: 'root',
 })
 export class MoviesService {
+  generos: Genre[] = [];
   private popularesPage = 0;
 
   constructor(private http: HttpClient) {}
@@ -62,6 +64,17 @@ export class MoviesService {
 
   buscarPelicula(texto: string) {
     return this.ejecutarQuery(`/search/movie?query=${texto}`);
+  }
+
+  cargarGenero(): Promise<Genre[]> {
+    return new Promise((resolve) => {
+      this.ejecutarQuery(`/genre/movie/list?a=1`).subscribe((resp) => {
+        // eslint-disable-next-line @typescript-eslint/dot-notation
+        this.generos = resp['genres'];
+        console.log(this.generos);
+        resolve(this.generos);
+      });
+    });
   }
 
   private ejecutarQuery<T>(query: string) {
